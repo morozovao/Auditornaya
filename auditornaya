@@ -1,0 +1,58 @@
+
+/* Для примера я решил решить задачу:
+* Прямо на планету летит комета. Скорость кометы неизвестна, однако можно замерить время необходимое свету отразиться и вернуться и
+* с помощью таких двух замеров и интервалу между ними узнать скорость кометы и выяснить является ли она выше средней, напишите программу,
+* делающею это, и выводящая её скорость в км/с */
+
+#include <iostream>
+using namespace std;
+
+template<typename T>
+constexpr T c = T(299'792.458); /* Введём константу с помощью шаблона чтобы позже выбрать удобный тип, сделать так позволяет C++14. Также C++14
+*                                      Позволяет нам ставить в численных литералах разделители для удобства, в данном случае
+*                                      мы берём скорость света в километрах в час */
+
+constexpr int Podschet(float x, float y, float t) /* Спецификатор constexpr позволяет считать константу на этапе компиляции, что упрощает подсчёт.
+*                                                    Он был добавлен в C++11.
+                                                  */
+{
+    const int V = 33;
+    float k = (x - y) / t;
+    bool Vivod = true;
+    if (k > V)                         // Использовать if в constexpr функции стало возможно только в C++14
+    {
+        return Vivod;
+    }
+    else
+    {
+        Vivod = false;
+        return Vivod;
+    }
+}
+
+auto CalculateSpeed(float i)          //В C++14 стало возможным автомотически определить вывод не лямбда-функции
+{
+    return ((i * c<float>) / 2);
+}
+
+int main()
+{
+    float t1, t2, tInt;
+    cout << "Enter first and second measuring" << endl;
+    cin >> t1 >> t2;
+    cout << "Now enter interval between measurements" << endl;
+    cin >> tInt;
+    auto r1 = CalculateSpeed(t1);          //В C++11 Появился тип auto, автоматически определяющий тип ввыедёного литерала
+    auto r2 = CalculateSpeed(t2);
+    bool rezult = Podschet(r1, r2, tInt);
+    if (rezult == true)
+    {
+        cout << "Comet faster than average" << endl;
+        cout << "Comet`s speed is " << (r1 - r2) / tInt << "km/s" << endl;
+    }
+    else
+    {
+        cout << "Comet slower than average" << endl;
+        cout << "Comet`s speed is " << (r1 - r2) / tInt << "km/s" << endl;
+    }
+}
